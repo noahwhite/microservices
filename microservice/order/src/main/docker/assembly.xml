@@ -7,7 +7,6 @@
             <includes>
                 <include>org.javaee7.wildfly.samples:order</include>
             </includes>
-            <outputDirectory>/opt/jboss/wildfly/standalone/deployments/</outputDirectory>
             <outputFileNameMapping>order.war</outputFileNameMapping>
         </dependencySet>
     </dependencySets>

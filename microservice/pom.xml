@@ -8,57 +8,45 @@
 
     <packaging>pom</packaging>
 
-    <modules>
-        <module>contracts</module>
-        <module>services</module>
-        <module>catalog</module>
-        <module>user</module>
-        <module>order</module>
-        <module>everest</module>
-    </modules>
-
     <name>Shopping Cart Microservice</name>
-    
+
     <properties>
+        <version.arquillian>1.1.8.Final</version.arquillian>
+        <version.junit>4.12</version.junit>
+        <version.wildfly.server>8.2.0.Final</version.wildfly.server>
         <version.wildfly-swarm>1.0.0.Alpha1</version.wildfly-swarm>
-        <version.docker-plugin>0.11.3</version.docker-plugin>
         <version.resteasy>3.0.11.Final</version.resteasy>
-        <version.curator>2.8.0</version.curator>        
+        <version.snoop>1.0.0</version.snoop>
+        <version.curator>2.8.0</version.curator>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <msa.docker.host>192.168.99.100</msa.docker.host>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.javaee7.wildfly.samples</groupId>
-                <artifactId>services</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
                 <version>7.0</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>org.javaee7.wildfly.samples</groupId>
-                <artifactId>contracts</artifactId>
-                <version>1.0-SNAPSHOT</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-client</artifactId>
                 <version>${version.resteasy}</version>
                 <scope>provided</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxb-provider</artifactId>
                 <version>${version.resteasy}</version>
                 <scope>provided</scope>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
@@ -66,15 +54,96 @@
                 <exclusions>
                     <exclusion>
                         <groupId>io.netty</groupId>
-                        <artifactId>*</artifactId>
+                        <artifactId>netty</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>eu.agilejava</groupId>
                 <artifactId>snoop</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>  
+                <version>${version.snoop}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>eu.agilejava</groupId>
+                <artifactId>snoop-client</artifactId>
+                <version>${version.snoop}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.javaee7.wildfly.samples</groupId>
+                <artifactId>utils</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.javaee7.wildfly.samples</groupId>
+                <artifactId>contracts</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.javaee7.wildfly.samples</groupId>
+                <artifactId>services</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.core</groupId>
+                <artifactId>arquillian-core-api</artifactId>
+                <version>${version.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.core</groupId>
+                <artifactId>arquillian-core-impl-base</artifactId>
+                <version>${version.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.junit</groupId>
+                <artifactId>arquillian-junit-core</artifactId>
+                <version>${version.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.junit</groupId>
+                <artifactId>arquillian-junit-container</artifactId>
+                <version>${version.arquillian}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-container-embedded</artifactId>
+                <version>${version.wildfly.server}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-embedded</artifactId>
+                <version>${version.wildfly.server}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-protocol-jmx</artifactId>
+                <version>${version.wildfly.server}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${version.junit}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -82,8 +151,19 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <modules>
+        <module>utils</module>
+        <module>contracts</module>
+        <module>services</module>
+        <module>catalog</module>
+        <module>user</module>
+        <module>order</module>
+        <module>everest</module>
+    </modules>
 
     <build>
         <pluginManagement>
@@ -110,6 +190,16 @@
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.jolokia</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>0.13.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.18.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -122,23 +212,15 @@
                 <artifactId>maven-war-plugin</artifactId>
             </plugin>
             <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <skipTests>true</skipTests>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
-    
+
     <profiles>
         <profile>
             <id>docker</id>
@@ -147,92 +229,6 @@
                     <plugin>
                         <groupId>org.jolokia</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
-                        <version>0.11.5</version>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <alias>user</alias>
-                                    <name>arungupta/shoppingcart-user</name>
-                                    <build>
-                                        <from>jboss/wildfly</from>
-                                        <assembly>
-                                            <descriptor>assembly.xml</descriptor>
-                                            <basedir>user</basedir>
-                                        </assembly>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </build>
-                                    
-                                    <run>
-                                        <ports>
-                                            <port>user.port:8080</port>
-                                        </ports>
-                                    </run>
-                                </image>
-                                <image>
-                                    <alias>catalog</alias>
-                                    <name>arungupta/shoppingcart-catalog</name>
-                                    <build>
-                                        <from>jboss/wildfly</from>
-                                        <assembly>
-                                            <descriptor>assembly.xml</descriptor>
-                                            <basedir>catalog</basedir>
-                                        </assembly>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </build>
-
-                                    <run>
-                                        <ports>
-                                            <port>user.port:8080</port>
-                                        </ports>
-                                    </run>
-                                </image>
-                                <image>
-                                    <alias>order</alias>
-                                    <name>arungupta/shoppingcart-order</name>
-                                    <build>
-                                        <from>jboss/wildfly</from>
-                                        <assembly>
-                                            <descriptor>assembly.xml</descriptor>
-                                            <basedir>order</basedir>
-                                        </assembly>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </build>
-
-                                    <run>
-                                        <ports>
-                                            <port>user.port:8080</port>
-                                        </ports>
-                                    </run>
-                                </image>
-                                <image>
-                                    <alias>everest-web</alias>
-                                    <name>arungupta/shoppingcart-web</name>
-                                    <build>
-                                        <from>jboss/wildfly</from>
-                                        <assembly>
-                                            <descriptor>assembly.xml</descriptor>
-                                            <basedir>everest-web</basedir>
-                                        </assembly>
-                                        <ports>
-                                            <port>8080</port>
-                                        </ports>
-                                    </build>
-
-                                    <run>
-                                        <ports>
-                                            <port>user.port:8080</port>
-                                        </ports>
-                                    </run>
-                                </image>
-                            </images>
-                        </configuration>
-                        
                         <executions>
                             <execution>
                                 <id>docker:build</id>
@@ -240,6 +236,21 @@
                                 <goals>
                                     <goal>build</goal>
                                 </goals>
+                                <configuration>
+                                    <images>
+                                        <image>
+                                            <build combine.self="append">
+                                                <cmd>
+                                                    <exec>
+                                                        <args>/opt/jboss/wildfly/bin/standalone.sh</args>
+                                                        <args>-b</args>
+                                                        <args>127.0.0.1</args>
+                                                    </exec>
+                                                </cmd>
+                                            </build>
+                                        </image>
+                                    </images>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>docker:start</id>
@@ -253,19 +264,79 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>wildfly</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.8</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.wildfly</groupId>
+                                            <artifactId>wildfly-dist</artifactId>
+                                            <version>8.2.0.Final</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>target</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.18.1</version>
+                        <configuration>
+                            <!-- Fork every test because it will launch a separate AS instance -->
+                            <forkMode>always</forkMode>
+                            <includes>
+                                <include>**/TestAll.java</include>
+                            </includes>
+                            <systemPropertyVariables>
+                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                                <jboss.home>${project.basedir}/target/wildfly-8.2.0.Final</jboss.home>
+                                <module.path>${project.basedir}/target/wildfly-8.2.0.Final/modules</module.path>
+                            </systemPropertyVariables>
+                            <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
-    <repositories>
-        <repository>
-            <id>snoop</id>
-            <url>http://nexus.agilejava.eu/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true></enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 </project>

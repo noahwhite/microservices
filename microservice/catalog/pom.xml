@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -9,9 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.javaee7.wildfly.samples</groupId>
     <artifactId>catalog</artifactId>
-    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>catalog</name>
@@ -22,11 +21,15 @@
             <artifactId>services</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.javaee7.wildfly.samples</groupId>
+            <artifactId>utils</artifactId>
+        </dependency>
+        <dependency>
             <groupId>eu.agilejava</groupId>
             <artifactId>snoop</artifactId>
-        </dependency>  
+        </dependency>
     </dependencies>
-    
+
     <build>
         <finalName>catalog</finalName>
         <plugins>
@@ -35,6 +38,35 @@
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <configuration>
                     <skip>false</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jolokia</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <images>
+                        <image>
+                            <alias>catalog</alias>
+                            <name>arungupta/shoppingcart-catalog</name>
+                            <build>
+                                <from>jboss/wildfly</from>
+                                <assembly>
+                                    <descriptor>assembly.xml</descriptor>
+                                    <basedir>/opt/jboss/wildfly/standalone/deployments</basedir>
+                                    <user>jboss:jboss:jboss</user>
+                                </assembly>
+                                <ports>
+                                    <port>8080</port>
+                                </ports>
+                            </build>
+                            <run>
+                                <ports>
+                                    <port>catalog.port:8080</port>
+                                </ports>
+                            </run>
+                        </image>
+                    </images>
                 </configuration>
             </plugin>
         </plugins>
